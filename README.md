@@ -1,1 +1,3 @@
-Códigos/documentos desarrollados para TFG
+Códigos/documentos desarrollados para TFG.
+
+cada carpeta corresponde a un modelo determinado.
