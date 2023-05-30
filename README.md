@@ -1,3 +1,1 @@
-Códigos/documentos desarrollados para TFG.
-
-cada carpeta corresponde a un modelo determinado.
+Control de versión de los notebooks y otros archivos desarrollados para TFG
