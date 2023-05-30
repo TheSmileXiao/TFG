@@ -1,12 +1,12 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-from keras.preprocessing.image import ImageDataGenerator
 import os
+import matplotlib.pyplot as plt
+from tensorflow.keras.applications import EfficientNetB0
 
 dir = "../dataset/"
 folder_names = os.listdir(dir)
-
 train_ds, val_ds = tf.keras.utils.image_dataset_from_directory(
     dir,
     labels="inferred",
@@ -27,6 +27,19 @@ print("Number of training samples: %d" % tf.data.experimental.cardinality(train_
 print(
     "Number of validation samples: %d" % tf.data.experimental.cardinality(val_ds)
 )
+
+# #View images
+# for images, labels in train_ds.take(3):
+#     # Display the images in a grid
+#     print(labels)
+#     # plt.figure(figsize=(10, 10))
+#     # for i in range(9):
+#     #     ax = plt.subplot(3, 3, i + 1)
+#     #     print(labels[i])
+#     #     plt.imshow(images[i].numpy().astype("uint8"))
+#     #     plt.axis("off")
+#     # plt.show()
+
 #First, instantiate a base model with pre-trained weights.
 base_model = keras.applications.Xception(
     weights='imagenet',  # Load weights pre-trained on ImageNet.
@@ -46,8 +59,9 @@ x = base_model(inputs, training=False)
 x = keras.layers.GlobalAveragePooling2D()(x)
 # A Dense classifier with a single unit (binary classification)
 x = keras.layers.Dense(512, activation="relu")(x)
+x = keras.layers.Dense(180, activation="relu")(x)
 
-outputs = keras.layers.Dense(1)(x)
+outputs = keras.layers.Dense(180, activation="softmax")(x)
 
 #no funciona
 model = keras.Model(inputs, outputs)
@@ -66,9 +80,9 @@ model.compile(optimizer=keras.optimizers.Adam(),
 model.fit(train_ds, epochs=20, validation_data=val_ds)
 
 # Unfreeze the base model
-  #base_model.trainable = True
-  #model.compile(optimizer=keras.optimizers.Adam(1e-5),  # Very low learning rate
-  #              loss=keras.losses.BinaryCrossentropy(from_logits=True),
-  #              metrics=[keras.metrics.BinaryAccuracy()])
-  #Train end-to-end. Be careful to stop before you overfit!
-  #model.fit(new_dataset, epochs=10, validation_data=...)
+#   base_model.trainable = True
+#   model.compile(optimizer=keras.optimizers.Adam(1e-5),  # Very low learning rate
+#                loss=keras.losses.BinaryCrossentropy(from_logits=True),
+#                metrics=[keras.metrics.BinaryAccuracy()])
+#   Train end-to-end. Be careful to stop before you overfit!
+#   model.fit(new_dataset, epochs=10, validation_data=...)
